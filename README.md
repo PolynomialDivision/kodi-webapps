@@ -13,6 +13,7 @@ add-on type) and a web client such as
 | `webapp.duckduckgo` | DuckDuckGo |
 | `webapp.francetv` | france.tv, big-screen edition |
 | `webapp.la7` | La7, HbbTV edition |
+| `webapp.luci` | Local OpenWrt web interface, TV view |
 | `webapp.m6plus` | M6+, HbbTV edition |
 | `webapp.mitele` | Mitele, HbbTV edition |
 | `webapp.netflix` | Netflix |
