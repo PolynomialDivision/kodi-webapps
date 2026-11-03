@@ -1,9 +1,48 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-// HbbTV apps play on-demand streams through the OIPF A/V Control object, an
-// <object> with a media type, which the web view does not implement. Give
-// such objects the A/V Control API on top of a <video> element. WebKit does
-// not render an <object>'s fallback content, so the video sits next to the
-// object and follows its box.
+// What an HbbTV terminal gives its applications and the web view lacks: the
+// receivers' key codes, the OIPF A/V Control object (played by a <video> next
+// to it, as WebKit renders no fallback content), the video/broadcast object
+// and the application manager, whose destroyApplication() returns to Kodi.
+
+(function () {
+    var VK = {
+        VK_LEFT: 37, VK_UP: 38, VK_RIGHT: 39, VK_DOWN: 40, VK_ENTER: 13,
+        VK_BACK: 461, VK_RED: 403, VK_GREEN: 404, VK_YELLOW: 405, VK_BLUE: 406,
+        VK_PLAY: 415, VK_PAUSE: 19, VK_PLAY_PAUSE: 463, VK_STOP: 413,
+        VK_FAST_FWD: 417, VK_REWIND: 412, VK_NEXT: 425, VK_PREV: 424,
+        VK_0: 48, VK_1: 49, VK_2: 50, VK_3: 51, VK_4: 52,
+        VK_5: 53, VK_6: 54, VK_7: 55, VK_8: 56, VK_9: 57
+    };
+    var WPE_CODES = {
+        VK_BACK: 166, VK_PLAY: 250, VK_STOP: 178, VK_FAST_FWD: 228,
+        VK_REWIND: 227, VK_NEXT: 176, VK_PREV: 177
+    };
+    var keyEvent = window.KeyEvent || (window.KeyEvent = {});
+    var hbbtvCodes = {};
+    var name;
+
+    for (name in VK)
+        keyEvent[name] = VK[name];
+    for (name in WPE_CODES)
+        hbbtvCodes[WPE_CODES[name]] = VK[name];
+
+    function forward(ev) {
+        var code = hbbtvCodes[ev.keyCode];
+        var copy;
+
+        if (code === undefined || !ev.isTrusted)
+            return;
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        copy = new KeyboardEvent(ev.type, { key: ev.key, code: ev.code, bubbles: true, cancelable: true });
+        Object.defineProperty(copy, "keyCode", { value: code });
+        Object.defineProperty(copy, "which", { value: code });
+        ev.target.dispatchEvent(copy);
+    }
+
+    window.addEventListener("keydown", forward, true);
+    window.addEventListener("keyup", forward, true);
+})();
 
 (function () {
     var AV_TYPES = [
@@ -318,4 +357,132 @@
     av("getCurrentActiveComponents", components);
     av("selectComponent", function () {});
     av("unselectComponent", function () {});
+})();
+
+(function () {
+    // OIPF DAE 7.13.1.1: the video/broadcast object's stopped play state
+    var BROADCAST_STOPPED = 3;
+    var KEYSET = {
+        RED: 0x1, GREEN: 0x2, YELLOW: 0x4, BLUE: 0x8, NAVIGATION: 0x10,
+        VCR: 0x20, SCROLL: 0x40, INFO: 0x80, NUMERIC: 0x100, ALPHA: 0x200,
+        OTHER: 0x400
+    };
+    var APP_MANAGER = "application/oipfapplicationmanager";
+    var BROADCAST = "video/broadcast";
+    var proto = HTMLObjectElement.prototype;
+    var getAttr = Element.prototype.getAttribute;
+    var application;
+
+    function typeOf(obj) {
+        var type = getAttr.call(obj, "type");
+
+        return type === null ? "" : type.toLowerCase();
+    }
+
+    function list(items) {
+        items.item = function (i) { return this[i]; };
+        return items;
+    }
+
+    function close() {
+        try {
+            window.top.close();
+        } catch (e) {
+            window.close();
+        }
+    }
+
+    function keyset() {
+        var set = { value: 0x1f, otherKeys: [] };
+        var key;
+
+        for (key in KEYSET)
+            set[key] = KEYSET[key];
+        set.setValue = function (value) { this.value = value; return value; };
+        return set;
+    }
+
+    function owner() {
+        if (application)
+            return application;
+        application = {
+            visible: true,
+            privateData: { keyset: keyset(), currentChannel: null },
+            show: function () { this.visible = true; return true; },
+            hide: function () { this.visible = false; return true; },
+            activate: function () {},
+            deactivate: function () {},
+            activateInput: function () { return true; },
+            deactivateInput: function () { return true; },
+            destroyApplication: close,
+            createApplication: function (uri) {
+                window.location.href = uri;
+                return null;
+            }
+        };
+        application["private"] = application.privateData;
+        return application;
+    }
+
+    function children() {
+        return list([]);
+    }
+
+    // an earlier helper may own the name for other object types
+    function method(type, name, fn) {
+        var previous = Object.getOwnPropertyDescriptor(proto, name);
+
+        Object.defineProperty(proto, name, {
+            configurable: true,
+            value: function () {
+                if (typeOf(this) === type)
+                    return fn.apply(this, arguments);
+                if (previous && typeof previous.value === "function")
+                    return previous.value.apply(this, arguments);
+                return undefined;
+            }
+        });
+    }
+
+    function getter(type, name, fn) {
+        var previous = Object.getOwnPropertyDescriptor(proto, name);
+
+        Object.defineProperty(proto, name, {
+            configurable: true,
+            get: function () {
+                if (typeOf(this) === type)
+                    return fn.call(this);
+                return previous && previous.get ? previous.get.call(this) : undefined;
+            }
+        });
+    }
+
+    method(APP_MANAGER, "getOwnerApplication", owner);
+    method(APP_MANAGER, "getChildApplications", children);
+
+    getter(BROADCAST, "playState", function () { return BROADCAST_STOPPED; });
+    getter(BROADCAST, "currentChannel", function () { return null; });
+    method(BROADCAST, "bindToCurrentChannel", function () { return null; });
+    method(BROADCAST, "getChannelConfig", function () {
+        return { channelList: list([]), favouriteLists: list([]) };
+    });
+    method(BROADCAST, "setChannel", function () {});
+    method(BROADCAST, "prevChannel", function () {});
+    method(BROADCAST, "nextChannel", function () {});
+    method(BROADCAST, "stop", function () {});
+    method(BROADCAST, "release", function () {});
+    method(BROADCAST, "setFullScreen", function () {});
+    method(BROADCAST, "getVolume", function () { return 100; });
+    method(BROADCAST, "setVolume", function () { return true; });
+
+    if (!window.oipfObjectFactory) {
+        window.oipfObjectFactory = {
+            isObjectSupported: function (type) {
+                return [APP_MANAGER, BROADCAST].indexOf(String(type).toLowerCase()) >= 0;
+            },
+            createApplicationManagerObject: function () {
+                return { getOwnerApplication: owner, getChildApplications: children };
+            }
+        };
+    }
 })();

@@ -17,6 +17,18 @@
         document.removeEventListener("APP_START", app_started, false);
     }
 
+    // the app's exit loads the prompt again, which has no broadcast to show here
+    function app_exited() {
+        var from = document.referrer.split("#")[0].split("?")[0];
+
+        return from === window.location.origin + window.location.pathname;
+    }
+
+    if (window.top === window && app_exited()) {
+        window.close();
+        return;
+    }
+
     document.addEventListener("LANNER_CYCLE_DONE", cycle_done, false);
     document.addEventListener("APP_START", app_started, false);
 })();

@@ -37,8 +37,10 @@ it with "Install from zip file".
 
 Each top-level directory with an `addon.xml` is one add-on. `common/` holds
 what several web apps share: the uplink setting every web app offers and
-the user scripts fitting a 1280x720 HbbTV page to the screen and handing
-it the key codes HbbTV receivers send. Each of its
+the user scripts fitting a 1280x720 HbbTV page to the screen and giving
+it what an HbbTV terminal offers: the key codes HbbTV receivers send, the
+A/V Control and video/broadcast objects, and the application manager,
+whose destroyApplication() returns to Kodi. Each of its
 files is added to every web app that has no file of that name. An
 add-on's icon is a URL of the service's
 logo, which Kodi fetches; no logo is part of this repository.
