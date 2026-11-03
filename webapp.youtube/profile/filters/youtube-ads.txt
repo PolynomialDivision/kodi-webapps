@@ -1,0 +1,15 @@
+! Title: YouTube TV adverts
+||doubleclick.net^$third-party,script,image,xmlhttprequest,media,popup,ping,other
+||googlesyndication.com^$third-party,script,image,xmlhttprequest,media,popup,ping,other
+||googleadservices.com^$third-party,script,image,xmlhttprequest,media,popup,ping,other
+||google-analytics.com^$third-party,script,image,xmlhttprequest,media,popup,ping,other
+||googletagmanager.com^$third-party,script,image,xmlhttprequest,media,popup,ping,other
+||googletagservices.com^$third-party,script,image,xmlhttprequest,media,popup,ping,other
+||youtube.com/pagead/$script,image,xmlhttprequest,media,ping,other
+||youtube.com/api/stats/ads$script,image,xmlhttprequest,media,ping,other
+||youtube.com/ptracking$script,image,xmlhttprequest,media,ping,other
+||youtube.com/get_midroll_$script,image,xmlhttprequest,media,ping,other
+||youtube.com/*?adformat=$media,xmlhttprequest,other
+||youtube.com/*&adformat=$media,xmlhttprequest,other
+||ytimg.com/*?adformat=$media,xmlhttprequest,other
+||ytimg.com/*&adformat=$media,xmlhttprequest,other

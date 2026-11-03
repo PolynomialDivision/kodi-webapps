@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.youtube" name="YouTube TV" version="0.2.0" provider-name="Daniel Golle">
+<addon id="webapp.youtube" name="YouTube TV" version="0.2.1" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.0.0"/>
   </requires>
@@ -11,7 +11,7 @@
     <userscript>profile/scripts/10-identity.js</userscript>
     <userscript>profile/scripts/20-adblock.js</userscript>
     <userscript>profile/scripts/40-consent.js</userscript>
-    <contentfilter>profile/filters/youtube-ads.json</contentfilter>
+    <contentfilter>profile/filters/youtube-ads.txt</contentfilter>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">The YouTube TV app inside Kodi</summary>
