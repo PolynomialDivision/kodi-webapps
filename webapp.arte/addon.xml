@@ -3,13 +3,13 @@
   <requires>
     <import addon="kodi.webapp" version="1.1.0"/>
   </requires>
-  <extension point="kodi.webapp" starturl="http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE">
-    <starturl id="de">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE</starturl>
-    <starturl id="fr">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=fr_FR</starturl>
-    <starturl id="en">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=en_GB</starturl>
-    <starturl id="es">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=es_ES</starturl>
-    <starturl id="it">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=it_IT</starturl>
-    <starturl id="pl">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=pl_PL</starturl>
+  <extension point="kodi.webapp" starturl="http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE&amp;app=portal">
+    <starturl id="de">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE&amp;app=portal</starturl>
+    <starturl id="fr">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=fr_FR&amp;app=portal</starturl>
+    <starturl id="en">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=en_GB&amp;app=portal</starturl>
+    <starturl id="es">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=es_ES&amp;app=portal</starturl>
+    <starturl id="it">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=it_IT&amp;app=portal</starturl>
+    <starturl id="pl">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=pl_PL&amp;app=portal</starturl>
     <useragent>Mozilla/5.0 (Linux; aarch64) AppleWebKit/605.1.15 (KHTML, like Gecko) WPE HbbTV/1.5.1 (; OpenWrt; Kodi; 22.0; ; Kodi;)</useragent>
     <userscript>profile/scripts/00-hbbtv-scale.js</userscript>
     <userscript>profile/scripts/00-hbbtv.js</userscript>
