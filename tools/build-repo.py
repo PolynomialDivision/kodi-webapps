@@ -5,11 +5,14 @@
 Every top-level directory holding an addon.xml becomes <id>/<id>-<version>.zip
 with a .sha256 next to it; addons.xml and addons.xml.sha256 list them all.
 Files in common/ go into each web app lacking them, @ADDON_ID@ replaced.
+Each earlier version of an add-on is built from the commit before the one
+that replaced it, so a Kodi still holding an older addons.xml installs it.
 """
 
 import hashlib
 import html
 import os
+import subprocess
 import sys
 import xml.etree.ElementTree as ET
 import zipfile
@@ -63,6 +66,46 @@ def index_write(directory, entries):
                 "<title>Index</title></head><body><ul>\n%s</ul></body></html>\n" % links)
 
 
+def git(tree, *args):
+    return subprocess.run(["git", "-C", tree, *args], check=True,
+                          capture_output=True).stdout
+
+
+def git_files(tree, commit, top):
+    names = git(tree, "ls-tree", "-r", "--name-only", commit, "--", top + "/")
+    return {os.path.relpath(name, top): git(tree, "show", "%s:%s" % (commit, name))
+            for name in names.decode().splitlines()}
+
+
+def addon_files_at(tree, commit, name, addon_id, is_webapp):
+    files = {}
+    for rel, data in (git_files(tree, commit, "common") if is_webapp else {}).items():
+        if rel.endswith(TEXT_SUFFIXES):
+            data = data.replace(b"@ADDON_ID@", addon_id.encode())
+        files[rel] = data
+    files.update(git_files(tree, commit, name))
+    return files
+
+
+def earlier_versions(tree, name):
+    commits = git(tree, "log", "--reverse", "--format=%H", "--", name + "/addon.xml")
+    versions = []
+    previous = None
+    for commit in commits.decode().split():
+        manifest = ET.fromstring(git(tree, "show", "%s:%s/addon.xml" % (commit, name)))
+        version = manifest.get("version")
+        if previous and version != previous:
+            versions.append((previous, commit + "^"))
+        previous = version
+    return versions
+
+
+def zip_publish(target, zip_name, addon_id, files):
+    zip_write(os.path.join(target, zip_name), addon_id, files)
+    sha256_write(os.path.join(target, zip_name))
+    return [zip_name, zip_name + ".sha256"]
+
+
 def addon_dirs(tree):
     for name in sorted(os.listdir(tree)):
         if os.path.isfile(os.path.join(tree, name, "addon.xml")):
@@ -89,12 +132,15 @@ def main():
 
         target = os.path.join(out, addon_id)
         os.makedirs(target, exist_ok=True)
-        zip_name = "%s-%s.zip" % (addon_id, version)
         is_webapp = manifest.find("extension[@point='kodi.webapp']") is not None
-        zip_write(os.path.join(target, zip_name), addon_id,
-                  addon_files(src, common if is_webapp else None, addon_id))
-        sha256_write(os.path.join(target, zip_name))
-        index_write(target, [zip_name, zip_name + ".sha256"])
+        entries = zip_publish(target, "%s-%s.zip" % (addon_id, version), addon_id,
+                              addon_files(src, common if is_webapp else None, addon_id))
+        for old, commit in earlier_versions(tree, name):
+            if old != version:
+                entries += zip_publish(target, "%s-%s.zip" % (addon_id, old), addon_id,
+                                       addon_files_at(tree, commit, name, addon_id,
+                                                      is_webapp))
+        index_write(target, entries)
 
         manifests.append(ET.tostring(manifest, encoding="unicode").strip())
         top_entries.append(addon_id + "/")
