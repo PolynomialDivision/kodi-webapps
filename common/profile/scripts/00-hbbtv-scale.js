@@ -9,7 +9,7 @@
 
         if (!root || !scale)
             return;
-        root.style.background = "#000";
+        root.style.background = "transparent";
         root.style.zoom = String(scale);
         root.style.position = "relative";
         root.style.left = (window.innerWidth / scale - 1280) / 2 + "px";
