@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.francetv" name="france.tv" version="1.0.1" provider-name="Daniel Golle">
+<addon id="webapp.francetv" name="france.tv" version="1.0.2" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://orange.france.tv/">
+    <viewport width="1920" height="1080"/>
     <useragent>Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 WebAppManager</useragent>
   </extension>
   <extension point="xbmc.addon.metadata">

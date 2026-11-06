@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.arte" name="ARTE" version="1.0.4" provider-name="Daniel Golle">
+<addon id="webapp.arte" name="ARTE" version="1.0.5" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.1.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE&amp;app=portal">
+    <viewport width="1280" height="720"/>
     <starturl id="de">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE&amp;app=portal</starturl>
     <starturl id="fr">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=fr_FR&amp;app=portal</starturl>
     <starturl id="en">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=en_GB&amp;app=portal</starturl>

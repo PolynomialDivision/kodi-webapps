@@ -90,12 +90,20 @@ file disagree, the draft is right and this file needs correcting.
   Policy.
 - `<contentfilter>`, a path to a filter file in Adblock Plus syntax, or
   `<contentfilter list="name"/>`, a reference to a shared list.
+- `<viewport width="1920" height="1080"/>`, the CSS viewport the pages
+  are written for. A television's browser keeps that size whatever the
+  panel's resolution; Kodi zooms the page so that the viewport fits the
+  screen, keeping its aspect ratio (needs `kodi.webapp` 1.2.0 or later;
+  an older Kodi lays the page out at the screen's size). Desktop and
+  responsive sites take none.
 
 Each add-on has a profile of its own, named by the add-on id: cookies,
 storage and logins persist across restarts and never mix with other web
 apps. The page's media state (video, audio, paused) drives Kodi's
 screensaver and display power rules. `window.close()` in the top
-document asks Kodi to leave the app.
+document asks Kodi to leave the app. Leaving an app, that way or by
+starting another one, closes its view: nothing of the page keeps
+running, and the next start loads the start URL afresh.
 
 ### common/
 
@@ -168,10 +176,13 @@ them.
 3. Pick the identity. HbbTV editions take an HbbTV user agent that names
    Kodi as the terminal, as the existing HbbTV add-ons do; hosted TV apps
    take the user agent of the platform they are served to.
-4. Add `profile/scripts/00-hbbtv-scale.js` only for editions laid out for
-   1280x720, and `profile/scripts/00-hbbtv.js` for every HbbTV edition.
+4. Declare the viewport the edition lays itself out for with
+   `<viewport>`: 1280x720 or 1920x1080 for HbbTV editions, 1920x1080 for
+   hosted TV apps. Add `profile/scripts/00-hbbtv.js` for every HbbTV
+   edition, and `profile/scripts/00-hbbtv-scale.js` for those laid out
+   for 1280x720; it centres the page on screens of another aspect ratio.
    Look at the screen: a full-HD layout is oversized with the scaling
-   script.
+   script or a 1280x720 viewport.
 5. Add user scripts and filters as the following sections describe.
 6. Add the add-on to the table in `README.md`.
 7. Raise the version of an add-on with every change to it, in the same
@@ -366,7 +377,8 @@ the change was made.
 
 1. The start URL loads under the chosen identity: no TLS error, no mixed
    content, no refusal of the user agent.
-2. The layout fits the screen at every resolution Kodi runs at.
+2. The layout fits the screen at every resolution Kodi runs at, 4K
+   included.
 3. Every screen is reachable with the arrows, OK and BACK, and text can
    be entered. Most TV editions bring an on-screen keyboard of their
    own; that is how they are meant to be used, and a user script must

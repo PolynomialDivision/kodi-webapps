@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.orfon" name="ORF ON" version="1.0.5" provider-name="Daniel Golle">
+<addon id="webapp.orfon" name="ORF ON" version="1.0.6" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://orfhbbtv.orf.at/orf/tvthek24/index.html?id=orfon&amp;ref=portal&amp;trackingconsent=false">
+    <viewport width="1280" height="720"/>
     <useragent>Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 WebAppManager</useragent>
     <userscript>profile/scripts/00-hbbtv-scale.js</userscript>
     <userscript>profile/scripts/00-hbbtv.js</userscript>
