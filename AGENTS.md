@@ -5,6 +5,11 @@ a streaming service or another web page to a Kodi web app, debug one, or
 contribute to this repository. Read it completely before starting; the
 boundaries in the first section are not negotiable.
 
+Requests often come from people who know the service and not this
+repository: "block the ads I see in ORF ON", "make an ad-free add-on
+for BBC iPlayer". "From a request to a pull request" turns such a
+request into a change; "Pull requests" says how it is submitted.
+
 ## Purpose and boundaries
 
 This repository makes the TV editions that broadcasters and streaming
@@ -38,17 +43,90 @@ Not accepted:
   add-on.
 - Redistributing a service's content or its filter lists. Shared lists
   are fetched by Kodi from their maintainers.
+- Saving, downloading or recording a service's media. The add-ons
+  present a page; they take nothing out of it.
+- Answering a declaration that is the viewer's to make, such as an age
+  check, a TV licence confirmation or terms of use.
 
 Circumventing content protection or any trust mechanism publishers rely
 on ends the contribution and bans the contributor at once. That covers,
 without being limited to: DRM, EME and CDM behaviour, key or licence
 handling, device certificates, keyboxes, attestation and integrity
-checks, account, subscription and paywall checks, and server-side
-session or token validation. A refusal of the CDM, of a licence server
-or of a service is a limit to accept and state, not a puzzle to solve.
-Presenting a TV user agent so that a service serves its TV edition is
-fine; forging anything that makes a service grant rights or keys it
-would otherwise refuse is not.
+checks, account, subscription and paywall checks, regional
+restrictions (by proxy, forged headers or a forged location), and
+server-side session or token validation. A refusal of the CDM, of a
+licence server or of a service is a limit to accept and state, not a
+puzzle to solve. Presenting a TV user agent so that a service serves
+its TV edition is fine; forging anything that makes a service grant
+rights or keys it would otherwise refuse is not.
+
+## From a request to a pull request
+
+People asking for a web app or a change rarely know Kodi's web app
+support, this repository or what a service permits. Work through these
+steps in order and talk to the person in plain words throughout.
+
+1. Find what exists. Each add-on is a directory `webapp.<service>`,
+   listed in `README.md`. Read its `addon.xml`, its scripts and
+   filters, and `git log -- <directory>`: the commit messages record
+   what was found about the service.
+2. Name the kind of change from the table under "Pull requests". One
+   pull request carries one kind; a request that needs two, such as a
+   new add-on and a fix to another one, becomes two pull requests.
+3. Check the request against the first section and against the
+   service, and tell the person before starting what cannot be done and
+   why: content locked to another country stays locked, adverts
+   inserted into the stream on the server stay, a service without
+   adverts leaves only its trackers to block, a refusal of the CDM ends
+   the matter. Offer what can be done instead.
+4. Ask what only the person knows:
+   - the country they watch from, and whether the service plays there;
+   - whether they have the account or subscription the service needs;
+   - the device Kodi runs on, and whether that Kodi has web app support
+     and kodi-webkit (see "How a web app runs"); without both nothing
+     can be tested;
+   - what they see, as precisely as they can: when an advert appears
+     (on start, before a programme, during one, as a banner in the
+     menus), which screen or key misbehaves, a photo of the screen;
+   - whether they can enable the WebKit inspector for the session.
+5. Explore. Without the device, fetch the start URL with the add-on's
+   user agent and read the page and its scripts. With the device, use
+   the inspector as "Developing with the WebKit inspector" describes;
+   most adverts and most faults show only in the network trace of the
+   live page.
+6. Change the add-on as the following sections describe, raise its
+   version, and commit as "Contributing to this repository" describes.
+7. Test on the person's device with real remote input, going through
+   the items of the "Porting checklist" the change touches. The person
+   confirms what the screen shows; nothing is reported as tested that
+   nobody saw working. Note the country the test ran from.
+8. Prepare the pull request title and description as "Pull requests"
+   describes. The person reads them, corrects what they observed
+   differently, and opens the pull request from their fork.
+
+Without a device that has web app support, the work ends after step 5
+with a report to the person of what was found; nothing untested is
+submitted.
+
+Two examples:
+
+- "Remove and block the ads I'm seeing in ORF ON". `webapp.orfon`
+  exists and opens the HbbTV edition, so the kind is `adblock`. Ask
+  when and where the adverts appear and where the person watches from.
+  Opt into the shared lists first if the manifest does not name them
+  yet, and test; then trace what loads around the adverts that remain
+  and block them with a filter file or a user script, as
+  "Advertisement and tracking" describes. Title:
+  `[adblock] webapp.orfon: block adverts and trackers`.
+- "Create an ad-free web add-on for BBC iPlayer". No add-on exists, so
+  the kind is `new` and the id `webapp.bbciplayer`. First check what
+  the service sets and tell the person: at the time of writing iPlayer
+  plays only in the United Kingdom, asks viewers to sign in and to
+  confirm that they hold a TV licence, and shows no adverts there. The
+  person and every tester then need a UK connection and a BBC account,
+  the confirmation stays the viewer's, and "ad-free" comes down to
+  blocking trackers. Then find a TV edition and build the add-on as the
+  next sections describe. Title: `[new] Add the BBC iPlayer web app`.
 
 ## How a web app runs
 
@@ -115,6 +193,9 @@ the common one and must carry the uplink category itself, as
 `webapp.arte` and `webapp.youtube` do. Keep add-on strings in 30000 to
 30019 and above 30023.
 
+A change to `common/` changes every web app that takes the file, so the
+commit making it raises the version of each of them.
+
 ### Video on a display plane
 
 Where Kodi shows a page's video on a plane underneath the page, the page
@@ -167,12 +248,17 @@ them.
 
 ## Creating an add-on
 
-1. Name the directory and the add-on id `webapp.<service>`.
+1. Name the directory and the add-on id `webapp.<service>`, where
+   `<service>` is the service's name in lower-case ASCII letters and
+   digits without separators: `webapp.ardmediathek`, `webapp.m6plus`.
 2. Write `addon.xml` after an existing add-on of the same kind: the
    `kodi.webapp` extension, the `xbmc.addon.metadata` with a factual
    summary and description, `<platform>all</platform>`, the licence, and
    an icon URL of an image the service publishes, legible on Kodi's dark
-   background.
+   background. Start at version 1.0.0. `<requires>` imports the lowest
+   `kodi.webapp` version that provides every manifest element the app
+   cannot work without, as `webapp.arte` imports 1.1.0 for its start
+   URL choice.
 3. Pick the identity. HbbTV editions take an HbbTV user agent that names
    Kodi as the terminal, as the existing HbbTV add-ons do; hosted TV apps
    take the user agent of the platform they are served to.
@@ -184,11 +270,20 @@ them.
    Look at the screen: a full-HD layout is oversized with the scaling
    script or a 1280x720 viewport.
 5. Add user scripts and filters as the following sections describe.
+   User scripts live in `profile/scripts/`, filter files in
+   `profile/filters/`. A script's name starts with two digits that
+   follow the order the manifest injects it in. A script starts with an
+   SPDX licence line and a comment saying what the page does and why
+   the script answers it that way, and keeps its names inside a
+   function, as the scripts of `webapp.la7` do.
 6. Add the add-on to the table in `README.md`.
 7. Raise the version of an add-on with every change to it, in the same
    commit. Kodi updates an add-on only when its version rises; the
    repository build keeps earlier versions available for Kodis that
-   still hold an older index.
+   still hold an older index. The second number rises when the app
+   gains behaviour of its own (adverts blocked, a start mode, a player
+   path), the third for fixes and for changes that reach it through
+   `common/`.
 
 Never rename a published add-on id.
 
@@ -350,10 +445,19 @@ Prefer, in this order:
    and hands to the client, which compiles each list once and keeps the
    result. A Kodi without the list opens the app unfiltered.
 2. A filter file of the add-on, in Adblock Plus syntax, for advert and
-   tracking requests the shared lists miss. The converter takes a subset
-   of the syntax: no regular expressions, and WebKit's content blocker
-   accepts no alternatives inside a rule, so write one rule per host or
-   path. Read kodi-webkit's converter for the options it supports.
+   tracking requests the shared lists miss. kodi-webkit's converter,
+   `filter-convert.c`, takes a subset of the syntax: blocking rules
+   such as `||host^` and path patterns with `*` and `^`, exceptions
+   with `@@`, the options `third-party`, `first-party`, `domain=`,
+   `match-case`, `important`, `badfilter`, `document`, `elemhide`,
+   `generichide` and
+   the resource types (`script`, `image`, `stylesheet`, `font`,
+   `media`, `object`, `xmlhttprequest`, `subdocument`, `websocket`,
+   `ping`, `other`, `popup`), and element hiding with `##` and `#@#`.
+   It skips regular expressions, HTML filters, extended and procedural
+   selectors and every other option, each skipped rule as a whole.
+   WebKit's content blocker accepts no alternatives inside a rule, so
+   write one rule per host or path.
 3. A user script, for adverts that no request filter can separate from
    the content: adverts configured by the page's own data, ad slots in
    API responses, players that wait for an advert before the content.
@@ -400,24 +504,98 @@ kodi-webkit, and a fault of Kodi to Kodi, but only once it is proven:
 see the next section. A user script may work around a proven fault
 only as a stated workaround, named as such in the commit message.
 
+## Testing a change
+
+The add-ons of any branch, a pull request's included, are built and
+installed like this:
+
+```sh
+git clone https://github.com/dangowrt/kodi-webapps
+cd kodi-webapps
+git fetch origin pull/<number>/head:pr-<number>
+git checkout pr-<number>
+python3 tools/build-repo.py ../webapps-build
+```
+
+The build reads the history of the tree, so the clone has to be
+complete, not shallow. Copy `../webapps-build/<id>/<id>-<version>.zip`
+to the device and install it with "Install from zip file" in Kodi's
+add-on browser, which asks for "Unknown sources" to be allowed in
+Kodi's system settings first.
+
+Many services play only in their own country, some only part of their
+catalogue. A test of playback counts only from a connection in a
+country where the service plays, and every report names the country it
+was made from. A test from elsewhere shows what the service shows
+abroad; report it as that. Content that needs an account is tested with
+an account of the same kind.
+
 ## Contributing to this repository
 
 - Work on a fork and open a pull request against the `main` branch on
-  GitHub. Merges to `main` publish the Kodi repository automatically.
+  GitHub, as the next section describes. Merges to `main` publish the
+  Kodi repository automatically.
 - One logical change per commit. The subject is `webapp.<id>: <what it
   does>` for a change to one add-on and a plain imperative sentence
-  otherwise. The body says what was wrong or missing, what the change
-  does and why, and records what was found about the service. Sign off
-  every commit (`git commit -s`).
+  otherwise, as in `git log`. The body says what was wrong or missing,
+  what the change does and why, and records what was found about the
+  service. Sign off every commit (`git commit -s`).
 - Raise the add-on's version in the commit that changes it.
 - Commit no binary files and no build output.
 - New code is under the GPL-2.0-or-later unless it derives from code
   under another licence, whose terms and notices it then keeps.
 - Test on a real Kodi with kodi-webkit before opening the pull request,
-  and say in the pull request what was tested, on which device, and what
-  was not.
+  and say in the pull request what was tested, on which device and from
+  which country, and what was not.
 - Say in the pull request that an agent took part and how, and follow
   any rule the repository adds about that.
+
+## Pull requests
+
+Every pull request fills in `.github/pull_request_template.md`, every
+section in its order. GitHub offers it when a pull request is opened
+in the browser; with `gh pr create`, write the filled-in template to a
+file and pass it with `--body-file`. The description is Markdown that
+GitHub reflows: one line per paragraph, no hard wrapping.
+
+The title is `[<kind>] <subject>`, at most 80 characters, with no full
+stop. `<subject>` follows the commit subject rule above; for a pull
+request of one commit it is that commit's subject. `<kind>` is the
+first of these that applies:
+
+| Kind | The pull request |
+| --- | --- |
+| `new` | adds a web app |
+| `common` | changes `common/`, and with it every web app taking the file |
+| `fix` | makes an existing app work again or work as it should: start, playback, navigation, layout, leaving the app |
+| `adblock` | blocks adverts or trackers, or answers consent banners |
+| `ux` | makes a working app easier to use: keys, focus, start page or language choice, settings |
+| `meta` | changes an add-on's name, summary, description, icon or translations only |
+| `repo` | changes the build, the publish workflow or the repository add-on |
+| `docs` | changes `README.md`, this file or the template only |
+
+A request that spans two kinds becomes two pull requests. Examples:
+
+```
+[new] Add the BBC iPlayer web app
+[adblock] webapp.orfon: block adverts and trackers
+[fix] webapp.la7: keep the picture after a seek in a replay
+[common] Return to Kodi when an HbbTV app exits
+```
+
+A title matches this regular expression:
+
+```
+^\[(new|common|fix|adblock|ux|meta|repo|docs)\] (webapp\.[a-z0-9]+: [a-z]|[A-Z]).*[^.]$
+```
+
+The description's "Facts" give countries as ISO 3166-1 alpha-2 codes
+(`AT`, `GB`): "Plays in" where the service serves the app or its
+catalogue, "Tested from" where the submitter's connection was. "Tested
+by the submitter" ticks only what a person saw working on the screen of
+a real device. "How others can test" names what a tester needs, the
+country first, and numbered steps from the build to the result to
+expect, so that a reviewer in that country can repeat them.
 
 ## Upstream projects
 

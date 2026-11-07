@@ -50,6 +50,12 @@ its SHA-256, and `addons.xml` with its SHA-256. On every push to `main` the
 `publish` workflow builds it and deploys it to GitHub Pages. Raise an
 add-on's version for Kodi to update it.
 
+## Contributing
+
+`AGENTS.md` describes what is accepted, how a TV edition is ported and
+tested, and how pull requests are titled and described; it is written
+for people and for the coding agents they direct alike.
+
 ## Licence
 
 GPL-2.0-or-later (LICENSE), except `webapp.youtube`, which carries its own
