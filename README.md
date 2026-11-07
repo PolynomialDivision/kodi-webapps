@@ -16,6 +16,7 @@ add-on type) and a web client such as
 | `webapp.luci` | Local OpenWrt web interface, TV view |
 | `webapp.m6plus` | M6+, HbbTV edition |
 | `webapp.mitele` | Mitele, HbbTV edition |
+| `webapp.module.hbbtv` | Nothing itself; the HbbTV terminal the HbbTV editions use |
 | `webapp.netflix` | Netflix |
 | `webapp.orfon` | ORF ON, HbbTV edition |
 | `webapp.primevideo` | Prime Video |
@@ -35,15 +36,17 @@ it with "Install from zip file".
 
 ## Layout
 
-Each top-level directory with an `addon.xml` is one add-on. `common/` holds
-what several web apps share: the uplink setting every web app offers and
-the user scripts fitting a 1280x720 HbbTV page to the screen and giving
-it what an HbbTV terminal offers: the key codes HbbTV receivers send, the
-A/V Control and video/broadcast objects, and the application manager,
-whose destroyApplication() returns to Kodi. Each of its
-files is added to every web app that has no file of that name. An
-add-on's icon is a URL of the service's
-logo, which Kodi fetches; no logo is part of this repository.
+Each top-level directory with an `addon.xml` is one add-on. Web app
+modules, `webapp.module.<name>`, hold user scripts that several web apps
+share; Kodi installs a module with the first web app that needs it and
+updates it on its own. `webapp.module.hbbtv` gives HbbTV editions what
+an HbbTV terminal offers, the key codes HbbTV receivers send, the A/V
+Control and video/broadcast objects and the application manager, whose
+destroyApplication() returns to Kodi, and fits a 1280x720 HbbTV page to
+the screen. `common/` holds the uplink setting every web app offers;
+each of its files is added to every web app that has no file of that
+name. An add-on's icon is a URL of the service's logo, which Kodi
+fetches; no logo is part of this repository.
 
 `tools/build-repo.py <dir>` builds the repository: one zip per add-on with
 its SHA-256, and `addons.xml` with its SHA-256. On every push to `main` the

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.arte" name="ARTE" version="1.0.5" provider-name="Daniel Golle">
+<addon id="webapp.arte" name="ARTE" version="1.0.6" provider-name="Daniel Golle">
   <requires>
-    <import addon="kodi.webapp" version="1.1.0"/>
+    <import addon="kodi.webapp" version="1.3.0"/>
+    <import addon="webapp.module.hbbtv" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=de_DE&amp;app=portal">
     <viewport width="1280" height="720"/>
@@ -12,8 +13,8 @@
     <starturl id="it">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=it_IT&amp;app=portal</starturl>
     <starturl id="pl">http://www.arte.tv/static/hbbtvv3/current/index.xhtml?pf=prod&amp;page=HOME&amp;lang=pl_PL&amp;app=portal</starturl>
     <useragent>Mozilla/5.0 (Linux; aarch64) AppleWebKit/605.1.15 (KHTML, like Gecko) WPE HbbTV/1.5.1 (; OpenWrt; Kodi; 22.0; ; Kodi;)</useragent>
-    <userscript>profile/scripts/00-hbbtv-scale.js</userscript>
-    <userscript>profile/scripts/00-hbbtv.js</userscript>
+    <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv-scale.js</userscript>
+    <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv.js</userscript>
     <userscript>profile/scripts/10-language.js</userscript>
   </extension>
   <extension point="xbmc.addon.metadata">

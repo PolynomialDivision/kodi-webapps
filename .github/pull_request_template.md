@@ -2,15 +2,15 @@
 Title: [<kind>] <subject>, or [<kind>] [agent] <subject> when an agent
 opens the pull request; at most 80 characters, no full stop.
 
-  <kind>     new, common, fix, adblock, ux, meta, repo or docs; the first
+  <kind>     new, module, fix, adblock, ux, meta, repo or docs; the first
              of these that applies (AGENTS.md, "Pull requests").
-  <subject>  "webapp.<id>: <what it does>" when one add-on changes,
+  <subject>  "<add-on id>: <what it does>" when one add-on changes,
              a plain imperative sentence otherwise.
 
   [new] Add the BBC iPlayer web app
   [adblock] webapp.orfon: block adverts and trackers
   [fix] webapp.la7: keep the picture after a seek in a replay
-  [common] Return to Kodi when an HbbTV app exits
+  [module] webapp.module.hbbtv: return to Kodi when an HbbTV app exits
   [adblock] [agent] webapp.orfon: skip the preroll before programmes
 
 Fill in every section. Write "none" or "not tested" rather than deleting

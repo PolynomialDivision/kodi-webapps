@@ -196,11 +196,13 @@ file disagree, the draft is right and this file needs correcting.
   kodi-webview refuses a user agent that breaks the HTTP header grammar
   WebKit validates against, so a remark such as Kodi's name belongs in a
   parenthesised comment.
-- `<userscript>`, a path in the add-on. Scripts are injected at document
-  start into every frame, in the order the manifest lists them, in the
-  page's own JavaScript world and outside the page's Content Security
-  Policy.
-- `<contentfilter>`, a path to a filter file in Adblock Plus syntax, or
+- `<userscript>`, a path in the add-on, or with `addon="<module id>"`
+  a path in a web app module the app imports (needs `kodi.webapp` 1.3.0
+  or later). Scripts are injected at document start into every frame,
+  in the order the manifest lists them, in the page's own JavaScript
+  world and outside the page's Content Security Policy.
+- `<contentfilter>`, a path to a filter file in Adblock Plus syntax, in
+  the add-on or with `addon=` in a module, or
   `<contentfilter list="name"/>`, a reference to a shared list.
 - `<viewport width="1920" height="1080"/>`, the CSS viewport the pages
   are written for. A television's browser keeps that size whatever the
@@ -217,18 +219,43 @@ document asks Kodi to leave the app. Leaving an app, that way or by
 starting another one, closes its view: nothing of the page keeps
 running, and the next start loads the start URL afresh.
 
+### Web app modules
+
+User scripts and filter files that several web apps share live in web
+app modules, add-ons with the id `webapp.module.<name>` and the
+extension point `kodi.webapp.module`, which takes no elements: a module
+is only files. `webapp.module.hbbtv` is the HbbTV terminal described
+under "The HbbTV terminal". A web app imports the module in
+`<requires>`, so that Kodi installs it along with the app, and names
+each file it uses with `addon=`, as the HbbTV editions do:
+
+```xml
+<import addon="webapp.module.hbbtv" version="1.0.0"/>
+...
+<userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv.js</userscript>
+```
+
+Kodi accepts `addon=` only for a module the app imports directly, and
+hands a module's file to the web view under the name
+`<module id>.<file name>`, so the file names within a module are
+unique, whatever directory they are in. The app's manifest orders its
+own and its modules' scripts. A module change raises the module's
+version, and Kodi updates the module on its own; an app raises its
+import of the module, and its own version, only when it needs what a
+newer module version provides.
+
 ### common/
 
 `tools/build-repo.py` adds every file of `common/` to each web app that
 has no file of that name, with `@ADDON_ID@` replaced in XML and PO files.
-It provides the uplink setting (strings 30020 to 30023) and the HbbTV
-scripts. An add-on with a `resources/settings.xml` of its own replaces
-the common one and must carry the uplink category itself, as
-`webapp.arte` and `webapp.youtube` do. Keep add-on strings in 30000 to
-30019 and above 30023.
+It provides the uplink setting (strings 30020 to 30023). An add-on with
+a `resources/settings.xml` of its own replaces the common one and must
+carry the uplink category itself, as `webapp.arte` and `webapp.youtube`
+do. Keep add-on strings in 30000 to 30019 and above 30023.
 
 A change to `common/` changes every web app that takes the file, so the
-commit making it raises the version of each of them.
+commit making it raises the version of each of them. What a page runs
+belongs in a module, not here.
 
 ### Video on a display plane
 
@@ -291,16 +318,17 @@ them.
    an icon URL of an image the service publishes, legible on Kodi's dark
    background. Start at version 1.0.0. `<requires>` imports the lowest
    `kodi.webapp` version that provides every manifest element the app
-   cannot work without, as `webapp.arte` imports 1.1.0 for its start
-   URL choice.
+   cannot work without, 1.3.0 for an app that uses a module, and the
+   modules it uses.
 3. Pick the identity. HbbTV editions take an HbbTV user agent that names
    Kodi as the terminal, as the existing HbbTV add-ons do; hosted TV apps
    take the user agent of the platform they are served to.
 4. Declare the viewport the edition lays itself out for with
    `<viewport>`: 1280x720 or 1920x1080 for HbbTV editions, 1920x1080 for
-   hosted TV apps. Add `profile/scripts/00-hbbtv.js` for every HbbTV
-   edition, and `profile/scripts/00-hbbtv-scale.js` for those laid out
-   for 1280x720; it centres the page on screens of another aspect ratio.
+   hosted TV apps. Every HbbTV edition imports `webapp.module.hbbtv`
+   and takes its `profile/scripts/hbbtv.js`; those laid out for
+   1280x720 take `profile/scripts/hbbtv-scale.js` before it, which
+   centres the page on screens of another aspect ratio.
    Look at the screen: a full-HD layout is oversized with the scaling
    script or a 1280x720 viewport.
 5. Add user scripts and filters as the following sections describe.
@@ -317,7 +345,7 @@ them.
    still hold an older index. The second number rises when the app
    gains behaviour of its own (adverts blocked, a start mode, a player
    path), the third for fixes and for changes that reach it through
-   `common/`.
+   `common/`. A module starts at 1.0.0 and follows the same scheme.
 
 Never rename a published add-on id.
 
@@ -361,8 +389,8 @@ A user script is best developed in that order:
    configures itself from, wrappers around `fetch`, `XMLHttpRequest` or
    `JSON.parse`, event listeners in the capture phase.
 4. Reload and test with real remote input. Events dispatched from
-   JavaScript are untrusted (`isTrusted` is false), pages and the common
-   HbbTV script treat them differently, and focus behaves differently, so
+   JavaScript are untrusted (`isTrusted` is false), pages and the HbbTV
+   module's script treat them differently, and focus behaves differently, so
    a test with synthetic events proves little.
 
 To drive the device: Kodi's JSON-RPC starts an add-on
@@ -390,7 +418,7 @@ reach the page. The remote's BACK arrives in WPE as the key
 `BrowserBack`, key code 166, which few TV editions understand. HbbTV
 applications compare key codes against the values HbbTV receivers send
 (BACK 461, the colour keys 403 to 406, the media keys) or read them from
-`KeyEvent.VK_*`. `common/profile/scripts/00-hbbtv.js` maps the WPE codes
+`KeyEvent.VK_*`. `hbbtv.js` of `webapp.module.hbbtv` maps the WPE codes
 to the receiver values for trusted events and defines `KeyEvent.VK_*`.
 Hosted TV apps expect the codes of their platform. Netflix and other
 desktop sites need focus management written for them, as
@@ -398,8 +426,8 @@ desktop sites need focus management written for them, as
 
 ### The HbbTV terminal
 
-The web view is no HbbTV terminal. `00-hbbtv.js` provides what the TV
-editions rely on:
+The web view is no HbbTV terminal. `webapp.module.hbbtv` provides what
+the TV editions rely on:
 
 - The OIPF A/V Control object (an `<object>` with a media type): its
   play, stop, seek, position, volume and state events, played by a
@@ -621,7 +649,7 @@ first of these that applies:
 | Kind | The pull request |
 | --- | --- |
 | `new` | adds a web app |
-| `common` | changes `common/`, and with it every web app taking the file |
+| `module` | changes a web app module or `common/`, and with it every web app using it |
 | `fix` | makes an existing app work again or work as it should: start, playback, navigation, layout, leaving the app |
 | `adblock` | blocks adverts or trackers, or answers consent banners |
 | `ux` | makes a working app easier to use: keys, focus, start page or language choice, settings |
@@ -635,14 +663,14 @@ A request that spans two kinds becomes two pull requests. Examples:
 [new] Add the BBC iPlayer web app
 [adblock] webapp.orfon: block adverts and trackers
 [fix] webapp.la7: keep the picture after a seek in a replay
-[common] Return to Kodi when an HbbTV app exits
+[module] webapp.module.hbbtv: return to Kodi when an HbbTV app exits
 [adblock] [agent] webapp.orfon: skip the preroll before programmes
 ```
 
 A title matches this regular expression:
 
 ```
-^\[(new|common|fix|adblock|ux|meta|repo|docs)\] (\[agent\] )?(webapp\.[a-z0-9]+: [a-z]|[A-Z]).*[^.]$
+^\[(new|module|fix|adblock|ux|meta|repo|docs)\] (\[agent\] )?(webapp\.[a-z0-9.]+: [a-z]|[A-Z]).*[^.]$
 ```
 
 The description's "Facts" give countries as ISO 3166-1 alpha-2 codes
