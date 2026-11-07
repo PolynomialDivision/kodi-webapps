@@ -43,9 +43,8 @@ updates it on its own. `webapp.module.hbbtv` gives HbbTV editions what
 an HbbTV terminal offers, the key codes HbbTV receivers send, the A/V
 Control and video/broadcast objects and the application manager, whose
 destroyApplication() returns to Kodi, and fits a 1280x720 HbbTV page to
-the screen. `common/` holds the uplink setting every web app offers;
-each of its files is added to every web app that has no file of that
-name. An add-on's icon is a URL of the service's logo, which Kodi
+the screen. Kodi itself offers the settings it reads in every web app,
+the uplink its connections leave through among them. An add-on's icon is a URL of the service's logo, which Kodi
 fetches; no logo is part of this repository.
 
 `tools/build-repo.py <dir>` builds the repository: one zip per add-on with

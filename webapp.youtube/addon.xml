@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.youtube" name="YouTube TV" version="0.2.1" provider-name="Daniel Golle">
+<addon id="webapp.youtube" name="YouTube TV" version="0.2.2" provider-name="Daniel Golle">
   <requires>
-    <import addon="kodi.webapp" version="1.0.0"/>
+    <import addon="kodi.webapp" version="1.3.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://www.youtube.com/tv">
     <useragent id="cobalt">Mozilla/5.0 (PS4; Leanback Shell) Cobalt/25.lts.40.1035033 (compatible; Kodi/22.0)</useragent>

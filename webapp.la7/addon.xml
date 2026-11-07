@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.la7" name="La7" version="1.3.6" provider-name="Daniel Golle">
+<addon id="webapp.la7" name="La7" version="1.3.7" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>

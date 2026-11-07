@@ -244,18 +244,17 @@ version, and Kodi updates the module on its own; an app raises its
 import of the module, and its own version, only when it needs what a
 newer module version provides.
 
-### common/
+### Settings
 
-`tools/build-repo.py` adds every file of `common/` to each web app that
-has no file of that name, with `@ADDON_ID@` replaced in XML and PO files.
-It provides the uplink setting (strings 30020 to 30023). An add-on with
-a `resources/settings.xml` of its own replaces the common one and must
-carry the uplink category itself, as `webapp.arte` and `webapp.youtube`
-do. Keep add-on strings in 30000 to 30019 and above 30023.
-
-A change to `common/` changes every web app that takes the file, so the
-commit making it raises the version of each of them. What a page runs
-belongs in a module, not here.
+Kodi gives every web app the settings that Kodi itself reads, in a
+category of its own after the app's: the uplink that the app's
+connections leave through (`uplinkaddress`, from `kodi.webapp` 1.3.0
+on). An add-on does not define them. Its own settings, such as the
+start URLs and identities it offers, go into
+`resources/settings.xml`, labelled by strings from 30000 upwards in
+`resources/language/resource.language.en_gb/strings.po`, as
+`webapp.arte` and `webapp.youtube` do. An add-on without settings of
+its own has neither file.
 
 ### Video on a display plane
 
@@ -316,10 +315,10 @@ them.
    `kodi.webapp` extension, the `xbmc.addon.metadata` with a factual
    summary and description, `<platform>all</platform>`, the licence, and
    an icon URL of an image the service publishes, legible on Kodi's dark
-   background. Start at version 1.0.0. `<requires>` imports the lowest
-   `kodi.webapp` version that provides every manifest element the app
-   cannot work without, 1.3.0 for an app that uses a module, and the
-   modules it uses.
+   background. Start at version 1.0.0. `<requires>` imports
+   `kodi.webapp` 1.3.0, or a later version where the app cannot work
+   without a manifest element it provides, and the modules the app
+   uses.
 3. Pick the identity. HbbTV editions take an HbbTV user agent that names
    Kodi as the terminal, as the existing HbbTV add-ons do; hosted TV apps
    take the user agent of the platform they are served to.
@@ -344,8 +343,8 @@ them.
    repository build keeps earlier versions available for Kodis that
    still hold an older index. The second number rises when the app
    gains behaviour of its own (adverts blocked, a start mode, a player
-   path), the third for fixes and for changes that reach it through
-   `common/`. A module starts at 1.0.0 and follows the same scheme.
+   path), the third for fixes and for a raised import. A module starts
+   at 1.0.0 and follows the same scheme.
 
 Never rename a published add-on id.
 
@@ -649,7 +648,7 @@ first of these that applies:
 | Kind | The pull request |
 | --- | --- |
 | `new` | adds a web app |
-| `module` | changes a web app module or `common/`, and with it every web app using it |
+| `module` | changes a web app module, and with it every web app using it |
 | `fix` | makes an existing app work again or work as it should: start, playback, navigation, layout, leaving the app |
 | `adblock` | blocks adverts or trackers, or answers consent banners |
 | `ux` | makes a working app easier to use: keys, focus, start page or language choice, settings |

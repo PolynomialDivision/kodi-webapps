@@ -4,9 +4,11 @@
 
 Every top-level directory holding an addon.xml becomes <id>/<id>-<version>.zip
 with a .sha256 next to it; addons.xml and addons.xml.sha256 list them all.
-Files in common/ go into each web app lacking them, @ADDON_ID@ replaced.
 Each earlier version of an add-on is built from the commit before the one
 that replaced it, so a Kodi still holding an older addons.xml installs it.
+Where that commit has a common/, its files go into each web app lacking
+them, @ADDON_ID@ replaced, so that the version keeps the settings it was
+released with.
 """
 
 import hashlib
@@ -31,16 +33,8 @@ def files_list(top):
     return found
 
 
-def addon_files(src, common, addon_id):
-    files = {}
-    for rel in files_list(common) if common else []:
-        data = open(os.path.join(common, rel), "rb").read()
-        if rel.endswith(TEXT_SUFFIXES):
-            data = data.replace(b"@ADDON_ID@", addon_id.encode())
-        files[rel] = data
-    for rel in files_list(src):
-        files[rel] = open(os.path.join(src, rel), "rb").read()
-    return files
+def addon_files(src):
+    return {rel: open(os.path.join(src, rel), "rb").read() for rel in files_list(src)}
 
 
 def zip_write(path, addon_id, files):
@@ -117,7 +111,6 @@ def main():
         sys.exit("usage: build-repo.py <output directory>")
     tree = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     out = sys.argv[1]
-    common = os.path.join(tree, "common")
     manifests = []
     top_entries = []
 
@@ -134,7 +127,7 @@ def main():
         os.makedirs(target, exist_ok=True)
         is_webapp = manifest.find("extension[@point='kodi.webapp']") is not None
         entries = zip_publish(target, "%s-%s.zip" % (addon_id, version), addon_id,
-                              addon_files(src, common if is_webapp else None, addon_id))
+                              addon_files(src))
         for old, commit in earlier_versions(tree, name):
             if old != version:
                 entries += zip_publish(target, "%s-%s.zip" % (addon_id, old), addon_id,

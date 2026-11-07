@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.orfon" name="ORF ON" version="1.0.7" provider-name="Daniel Golle">
+<addon id="webapp.orfon" name="ORF ON" version="1.0.8" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>

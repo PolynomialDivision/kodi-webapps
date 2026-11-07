@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.mitele" name="Mitele" version="1.0.5" provider-name="Daniel Golle">
+<addon id="webapp.mitele" name="Mitele" version="1.0.6" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>

@@ -48,19 +48,3 @@ msgstr ""
 msgctxt "#30015"
 msgid "Polski"
 msgstr ""
-
-msgctxt "#30020"
-msgid "Network"
-msgstr ""
-
-msgctxt "#30021"
-msgid "Which uplink the app's connections leave through."
-msgstr ""
-
-msgctxt "#30022"
-msgid "Uplink"
-msgstr ""
-
-msgctxt "#30023"
-msgid "Leave every connection of this app through a chosen uplink. Give an address, a subnet such as `192.168.5.0/24`, or an interface name. An address or a subnet binds each connection to that local source address; an interface name also pins each connection to that interface, so it never leaves through another one, even when the routing or the address changes. A subnet or an interface name is resolved for every connection, so a new DHCP lease is picked up. A connection that cannot be bound fails rather than taking the default route, and the app does not open while nothing matches. Empty means the system default route."
-msgstr ""
