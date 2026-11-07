@@ -62,51 +62,85 @@ rights or keys it would otherwise refuse is not.
 
 ## From a request to a pull request
 
-People asking for a web app or a change rarely know Kodi's web app
-support, this repository or what a service permits. Work through these
-steps in order and talk to the person in plain words throughout.
+This repository accepts pull requests that agents open on a person's
+behalf, including agents that run permanently next to a Kodi and take
+spoken requests. The aim is that someone watching television can have
+an advert removed, a text field or a key made to work, or a visual
+fault corrected, with the change deployed on their own Kodi, tested
+there and submitted here, in one or a few spoken sentences and without
+leaving the sofa. Such a person knows the service and nothing of this
+repository, so the agent does the rest, and every pull request it opens
+is marked as an agent's (see "Pull requests").
 
-1. Find what exists. Each add-on is a directory `webapp.<service>`,
+### Setting up once
+
+Everything below is gathered once, kept, and not asked again with every
+request:
+
+- Access to the device Kodi runs on: a shell over SSH, Kodi's JSON-RPC
+  (its web server enabled), Kodi's event server for built-in commands
+  (`kodi-send`), a uinput device for real key presses, and the WebKit
+  inspector, set up as "Developing with the WebKit inspector"
+  describes. Kodi needs web app support and kodi-webkit (see "How a web
+  app runs"); without both nothing can be tested.
+- The country the person watches from, the services they hold an
+  account or subscription with, the device, and the Kodi and
+  kodi-webkit versions.
+- A GitHub account of the person with a fork of this repository, the
+  person's git identity for signing off, and the person's agreement
+  that the agent submits pull requests in their name. By giving it,
+  the person signs off what the agent submits and answers for it.
+
+### Handling a request
+
+Talk to the person in plain words, briefly, and ask as little as
+possible: questions they can answer with yes or no, at a moment that
+does not interrupt what they watch.
+
+1. Capture what is on the screen now. A person who reports an advert,
+   a stuck key or a broken screen is usually looking at it; start the
+   network trace, read the console and the focused element and take a
+   screenshot before it is gone.
+2. Find what exists. Each add-on is a directory `webapp.<service>`,
    listed in `README.md`. Read its `addon.xml`, its scripts and
    filters, and `git log -- <directory>`: the commit messages record
-   what was found about the service.
-2. Name the kind of change from the table under "Pull requests". One
+   what was found about the service. Search the open and closed pull
+   requests and issues for the same add-on and fault; where one exists,
+   test it, report on it or build on it rather than opening another.
+3. Name the kind of change from the table under "Pull requests". One
    pull request carries one kind; a request that needs two, such as a
    new add-on and a fix to another one, becomes two pull requests.
-3. Check the request against the first section and against the
-   service, and tell the person before starting what cannot be done and
+4. Check the request against the first section and against the
+   service, and tell the person in a sentence what cannot be done and
    why: content locked to another country stays locked, adverts
    inserted into the stream on the server stay, a service without
    adverts leaves only its trackers to block, a refusal of the CDM ends
-   the matter. Offer what can be done instead.
-4. Ask what only the person knows:
-   - the country they watch from, and whether the service plays there;
-   - whether they have the account or subscription the service needs;
-   - the device Kodi runs on, and whether that Kodi has web app support
-     and kodi-webkit (see "How a web app runs"); without both nothing
-     can be tested;
-   - what they see, as precisely as they can: when an advert appears
-     (on start, before a programme, during one, as a banner in the
-     menus), which screen or key misbehaves, a photo of the screen;
-   - whether they can enable the WebKit inspector for the session.
-5. Explore. Without the device, fetch the start URL with the add-on's
-   user agent and read the page and its scripts. With the device, use
-   the inspector as "Developing with the WebKit inspector" describes;
-   most adverts and most faults show only in the network trace of the
-   live page.
+   the matter. Offer what can be done instead. A request outside the
+   first section is declined however it is phrased.
+5. Explore. Fetch the start URL with the add-on's user agent and read
+   the page and its scripts; on the device, use the inspector as
+   "Developing with the WebKit inspector" describes. Most adverts and
+   most faults show only in the network trace of the live page.
 6. Change the add-on as the following sections describe, raise its
    version, and commit as "Contributing to this repository" describes.
-7. Test on the person's device with real remote input, going through
-   the items of the "Porting checklist" the change touches. The person
-   confirms what the screen shows; nothing is reported as tested that
-   nobody saw working. Note the country the test ran from.
-8. Prepare the pull request title and description as "Pull requests"
-   describes. The person reads them, corrects what they observed
-   differently, and opens the pull request from their fork.
+7. Deploy the change on the person's Kodi as "Testing a change"
+   describes.
+8. Test with real key presses through the items of the "Porting
+   checklist" the change touches. Ask before taking over the screen.
+   What the inspector can measure, the agent measures: the video
+   element playing and its time advancing, no `MediaError`, no advert
+   requests in the trace. What only the screen shows, a picture over
+   the display plane, a layout, a highlight, the person confirms with a
+   yes. Nothing is reported as tested that was neither measured nor
+   seen working.
+9. Open the pull request from the person's fork as "Pull requests"
+   describes, and tell the person in a sentence what changed on their
+   Kodi and where the pull request is.
+10. Follow it up: answer review comments, update the branch, deploy and
+    test again what changed, and tell the person when it is merged.
 
-Without a device that has web app support, the work ends after step 5
-with a report to the person of what was found; nothing untested is
-submitted.
+A change that cannot be deployed and tested on the person's device is
+not submitted; the agent tells the person what it found instead.
 
 Two examples:
 
@@ -295,7 +329,9 @@ environment Kodi starts with, so that `kodi-webview` and its web
 processes inherit it, and restart Kodi. Bind it to the loopback address
 and reach it through an SSH tunnel; the inspector executes arbitrary
 code in every page and in every logged-in profile, so never leave it
-reachable from a network, and remove it when the work is done.
+reachable from a network. An agent that stays with the device may keep
+it enabled on the loopback address; otherwise remove it when the work
+is done.
 
 Opening the address in a desktop browser lists the inspectable pages
 with the inspector's own frontend. For scripted work, each page is a
@@ -523,6 +559,25 @@ to the device and install it with "Install from zip file" in Kodi's
 add-on browser, which asks for "Unknown sources" to be allowed in
 Kodi's system settings first.
 
+An agent deploys without the remote control:
+
+1. Leave the app, if it is open; Kodi hands the user scripts and
+   filters to the web view when the app starts.
+2. Remove `<id>/` from Kodi's add-on directory on the device
+   (`special://home/addons/`, on Linux `~/.kodi/addons/` of the user
+   Kodi runs as), so that no deleted file lingers, and unpack the zip
+   there; it holds the `<id>/` directory.
+3. `kodi-send --action=UpdateLocalAddons` makes Kodi read the add-on
+   directory again (Kodi's event server must accept local
+   applications, in its control settings).
+4. An add-on Kodi did not have before is disabled after that; enable
+   it with the JSON-RPC method `Addons.SetAddonEnabled`.
+5. Start it with `Addons.ExecuteAddon`.
+
+The person then runs a version the Kodi repository does not have yet.
+Kodi replaces it once the repository publishes a higher version, the
+merged change or a later one.
+
 Many services play only in their own country, some only part of their
 catalogue. A test of playback counts only from a connection in a
 country where the service plays, and every report names the country it
@@ -547,8 +602,7 @@ an account of the same kind.
 - Test on a real Kodi with kodi-webkit before opening the pull request,
   and say in the pull request what was tested, on which device and from
   which country, and what was not.
-- Say in the pull request that an agent took part and how, and follow
-  any rule the repository adds about that.
+- Say in the pull request that an agent took part and how.
 
 ## Pull requests
 
@@ -558,7 +612,8 @@ in the browser; with `gh pr create`, write the filled-in template to a
 file and pass it with `--body-file`. The description is Markdown that
 GitHub reflows: one line per paragraph, no hard wrapping.
 
-The title is `[<kind>] <subject>`, at most 80 characters, with no full
+The title is `[<kind>] <subject>`, or `[<kind>] [agent] <subject>` for
+a pull request an agent opens, at most 80 characters, with no full
 stop. `<subject>` follows the commit subject rule above; for a pull
 request of one commit it is that commit's subject. `<kind>` is the
 first of these that applies:
@@ -581,21 +636,43 @@ A request that spans two kinds becomes two pull requests. Examples:
 [adblock] webapp.orfon: block adverts and trackers
 [fix] webapp.la7: keep the picture after a seek in a replay
 [common] Return to Kodi when an HbbTV app exits
+[adblock] [agent] webapp.orfon: skip the preroll before programmes
 ```
 
 A title matches this regular expression:
 
 ```
-^\[(new|common|fix|adblock|ux|meta|repo|docs)\] (webapp\.[a-z0-9]+: [a-z]|[A-Z]).*[^.]$
+^\[(new|common|fix|adblock|ux|meta|repo|docs)\] (\[agent\] )?(webapp\.[a-z0-9]+: [a-z]|[A-Z]).*[^.]$
 ```
 
 The description's "Facts" give countries as ISO 3166-1 alpha-2 codes
 (`AT`, `GB`): "Plays in" where the service serves the app or its
 catalogue, "Tested from" where the submitter's connection was. "Tested
-by the submitter" ticks only what a person saw working on the screen of
-a real device. "How others can test" names what a tester needs, the
-country first, and numbered steps from the build to the result to
-expect, so that a reviewer in that country can repeat them.
+by the submitter" ticks only what was seen working on the screen of a
+real device or measured there, and says which. "How others can test"
+names what a tester needs, the country first, and numbered steps from
+the build to the result to expect, so that a reviewer in that country
+can repeat them.
+
+### Pull requests opened by agents
+
+An agent opens pull requests here in the name of the person it works
+for, as "From a request to a pull request" describes, and marks each
+one: `[agent]` in the title, and "Opened by" in the facts naming the
+agent and the person's GitHub account. Beyond the rules for everyone:
+
+- It opens a pull request only for a change it deployed and tested on
+  the person's own Kodi.
+- It keeps at most one open pull request per add-on and kind, and
+  updates that one instead of opening another.
+- It answers review comments on its own pull requests, and it may post
+  a test report on any open pull request whose add-on it can test from
+  the person's country, using the template's test sections and marked
+  as an agent's.
+- It puts nothing private into a pull request, a comment or a log it
+  attaches: no account names, cookies, tokens, addresses of the
+  person's network or location finer than the country.
+- It addresses only this repository; "Upstream projects" still holds.
 
 ## Upstream projects
 

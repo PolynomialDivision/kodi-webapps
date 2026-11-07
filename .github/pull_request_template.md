@@ -1,5 +1,6 @@
 <!--
-Title: [<kind>] <subject>, at most 80 characters, no full stop.
+Title: [<kind>] <subject>, or [<kind>] [agent] <subject> when an agent
+opens the pull request; at most 80 characters, no full stop.
 
   <kind>     new, common, fix, adblock, ux, meta, repo or docs; the first
              of these that applies (AGENTS.md, "Pull requests").
@@ -10,6 +11,7 @@ Title: [<kind>] <subject>, at most 80 characters, no full stop.
   [adblock] webapp.orfon: block adverts and trackers
   [fix] webapp.la7: keep the picture after a seek in a replay
   [common] Return to Kodi when an HbbTV app exits
+  [adblock] [agent] webapp.orfon: skip the preroll before programmes
 
 Fill in every section. Write "none" or "not tested" rather than deleting
 one. Delete these comments.
@@ -29,6 +31,7 @@ one. Delete these comments.
 - Device: <!-- hardware and operating system, e.g. Raspberry Pi 5, OpenWrt 25.12 -->
 - Kodi: <!-- the web app branch (xbmc/xbmc#30315) and its commit -->
 - kodi-webkit: <!-- commit or package version, and the WPE WebKit version -->
+- Opened by: <!-- "person", or "agent <name> for @<GitHub account of the person>" -->
 - Agent: <!-- "none", or which agent took part and what it did: wrote the scripts, traced the network, wrote this description -->
 
 ## What was found
@@ -37,7 +40,7 @@ one. Delete these comments.
 
 ## Tested by the submitter
 
-<!-- Tick what was tested on a real device and worked. For an item that was not tested or does not apply, leave it unticked and say why on the same line. Only what a person saw on the screen counts. -->
+<!-- Tick what was tested on a real device and worked, and add "seen" when a person saw it on the screen or "measured" when an agent measured it there (video playing and its time advancing, no MediaError, no advert requests in the network trace). For an item that was not tested or does not apply, leave it unticked and say why on the same line. -->
 
 - [ ] The app starts from Kodi and the start page loads
 - [ ] The layout fits the screen; resolutions tried:
