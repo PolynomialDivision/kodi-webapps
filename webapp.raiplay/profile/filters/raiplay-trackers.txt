@@ -1,0 +1,7 @@
+! Rai's own copy of comScore's measurement library, which the shared
+! lists do not name; they block only where it reports to
+||raiplay.it/hbbtv/*/Comscore-JS-
+! RaiPlay's own viewing hits and the viewing record its recommendations
+! are built from; the resume position is stored by another service
+||raiplay.it/hit-service/
+||raiplay.it/atomatic/predict-track-service/
