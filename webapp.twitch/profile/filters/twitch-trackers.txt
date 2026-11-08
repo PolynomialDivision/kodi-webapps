@@ -1,0 +1,2 @@
+! Twitch's own event tracking, which the shared lists leave
+||spade.twitch.tv^
