@@ -1,0 +1,7 @@
+! The tag manager loads the publisher's measurement and audience
+! modules; the shared lists block only what those modules send
+||corriereobjects.it/rcs_tag-manager/
+! Google's publisher tag, which 21-nogpt.js keeps from running, and the
+! library that identifies the device to the player's advert requests
+||securepubads.g.doubleclick.net/tag/js/gpt.js
+||imasdk.googleapis.com/pal/
