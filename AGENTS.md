@@ -29,8 +29,10 @@ Welcome:
   naming Kodi in it wherever the page tolerates that.
 - Blocking advertisement and tracking, with filter lists or with user
   scripts that keep adverts from being requested or shown.
-- Answering consent banners with the choice that sets the fewest
-  optional cookies.
+- Making consent banners usable with the remote and fair to the
+  viewer: the banner is shown, refusing everything optional is the
+  default and one press of OK, and accepting stays possible, as
+  "Consent banners" describes.
 
 Not accepted:
 
@@ -47,6 +49,10 @@ Not accepted:
   present a page; they take nothing out of it.
 - Answering a declaration that is the viewer's to make, such as an age
   check, a TV licence confirmation or terms of use.
+- Answering a consent banner for the viewer, with any choice, or
+  hiding it: consent and its refusal are the viewer's to give, so no
+  script, cookie, stored value, URL parameter or filter makes the
+  choice or keeps the banner from being shown.
 
 Circumventing content protection or any trust mechanism publishers rely
 on ends the contribution and bans the contributor at once. That covers,
@@ -540,6 +546,44 @@ quote host names, paths or configuration keys in documentation; they
 change constantly. A commit message may record what was observed when
 the change was made.
 
+## Consent banners
+
+Many services ask for consent to optional cookies, tracking and advert
+personalisation when an app first opens, in the EU above all. The
+answer is the viewer's. An add-on never gives or refuses consent
+itself and never keeps the banner from the screen: no cookie, stored
+value or URL parameter that tells the service the question was
+answered, no filter rule or element hiding that removes the banner or
+blocks its scripts. Where a shared list blocks them, an exception
+(`@@`) in the add-on's filter file lets them through.
+
+What an add-on does is make the banner usable with the remote and take
+its dark patterns apart:
+
+- The banner opens with the focus on the button that refuses
+  everything optional, "reject all" or "necessary cookies only", so
+  that one press of OK refuses.
+- Where refusing is offered only on a second layer, behind a link or a
+  settings button, a user script adds a refusing button to the first
+  layer that triggers the banner's own refusal, exactly as choosing it
+  there by hand would. Purposes and "legitimate interest" switches
+  that are on before the viewer touches them are turned off.
+- Refusing looks at least as prominent as accepting; a refusal styled
+  as a faint link gets the look of the accept button.
+- Accepting, and every finer choice the banner offers, stays reachable
+  with the arrows, OK and BACK. A banner in a frame of another origin
+  is reached by a user script too, as Kodi injects scripts into every
+  frame.
+
+Such a script fails open: where it no longer finds the banner's
+buttons, the banner stays as the service shows it.
+
+A banner shows only while the profile holds no answer, and many
+services show it only to connections from the EU. Test from a country
+where the service asks, after deleting the service's cookies
+(`Page.deleteCookie`) and its storage (`localStorage.clear()`,
+evaluated in the banner's frame) with the inspector.
+
 ## Porting checklist
 
 1. The start URL loads under the chosen identity: no TLS error, no mixed
@@ -556,8 +600,11 @@ the change was made.
    device can, with the video visible on the screen.
 5. Leaving the app returns to Kodi, from the app's own exit and with BACK
    from its first screen.
-6. Adverts and trackers are blocked.
-7. The page still works after a Kodi restart, with the profile kept.
+6. A consent banner, where the service shows one, appears, is usable
+   with the remote, and refuses everything optional with one press of
+   OK, as "Consent banners" describes.
+7. Adverts and trackers are blocked.
+8. The page still works after a Kodi restart, with the profile kept.
 
 Find the cause of a fault before changing anything. Almost every fault
 met while porting is in the add-on, in a user script, or in a wrong
@@ -650,7 +697,8 @@ first of these that applies:
 | `new` | adds a web app |
 | `module` | changes a web app module, and with it every web app using it |
 | `fix` | makes an existing app work again or work as it should: start, playback, navigation, layout, leaving the app |
-| `adblock` | blocks adverts or trackers, or answers consent banners |
+| `adblock` | blocks adverts or trackers |
+| `consent` | makes a consent banner usable with the remote, with refusing as the default |
 | `ux` | makes a working app easier to use: keys, focus, start page or language choice, settings |
 | `meta` | changes an add-on's name, summary, description, icon or translations only |
 | `repo` | changes the build, the publish workflow or the repository add-on |
@@ -664,12 +712,13 @@ A request that spans two kinds becomes two pull requests. Examples:
 [fix] webapp.la7: keep the picture after a seek in a replay
 [module] webapp.module.hbbtv: return to Kodi when an HbbTV app exits
 [adblock] [agent] webapp.orfon: skip the preroll before programmes
+[consent] webapp.youtube: focus the refusal on the consent page
 ```
 
 A title matches this regular expression:
 
 ```
-^\[(new|module|fix|adblock|ux|meta|repo|docs)\] (\[agent\] )?(webapp\.[a-z0-9.]+: [a-z]|[A-Z]).*[^.]$
+^\[(new|module|fix|adblock|consent|ux|meta|repo|docs)\] (\[agent\] )?(webapp\.[a-z0-9.]+: [a-z]|[A-Z]).*[^.]$
 ```
 
 The description's "Facts" give countries as ISO 3166-1 alpha-2 codes

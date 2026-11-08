@@ -2,8 +2,9 @@
 Title: [<kind>] <subject>, or [<kind>] [agent] <subject> when an agent
 opens the pull request; at most 80 characters, no full stop.
 
-  <kind>     new, module, fix, adblock, ux, meta, repo or docs; the first
-             of these that applies (AGENTS.md, "Pull requests").
+  <kind>     new, module, fix, adblock, consent, ux, meta, repo or docs;
+             the first of these that applies (AGENTS.md, "Pull
+             requests").
   <subject>  "<add-on id>: <what it does>" when one add-on changes,
              a plain imperative sentence otherwise.
 
@@ -12,6 +13,7 @@ opens the pull request; at most 80 characters, no full stop.
   [fix] webapp.la7: keep the picture after a seek in a replay
   [module] webapp.module.hbbtv: return to Kodi when an HbbTV app exits
   [adblock] [agent] webapp.orfon: skip the preroll before programmes
+  [consent] webapp.youtube: focus the refusal on the consent page
 
 Fill in every section. Write "none" or "not tested" rather than deleting
 one. Delete these comments.
@@ -36,7 +38,7 @@ one. Delete these comments.
 
 ## What was found
 
-<!-- For new and fix: the TV edition used and why (HbbTV, hosted TV app, desktop site), the user agent, the viewport, the player path (MSE or native), what else was tried and failed. For adblock: how the adverts are requested or configured, and which adverts remain and why. Reference the commit messages instead of repeating them where they say it already. -->
+<!-- For new and fix: the TV edition used and why (HbbTV, hosted TV app, desktop site), the user agent, the viewport, the player path (MSE or native), what else was tried and failed. For adblock: how the adverts are requested or configured, and which adverts remain and why. For consent: how the banner presented refusing before the change, and what the change does to it. Reference the commit messages instead of repeating them where they say it already. -->
 
 ## Tested by the submitter
 
@@ -48,6 +50,7 @@ one. Delete these comments.
 - [ ] On-demand playback, with picture and sound
 - [ ] Live playback, with picture and sound
 - [ ] Leaving the app returns to Kodi, from the app's exit and with BACK
+- [ ] Consent banner, with no answer stored: shown, refusal focused, one OK refuses, accepting reachable
 - [ ] Adverts: what showed before the change, and what shows after it
 - [ ] The app still works after a Kodi restart
 
@@ -68,4 +71,5 @@ one. Delete these comments.
 - [ ] A new add-on is listed in `README.md`
 - [ ] No logos, artwork, fonts, page code, media or filter lists of a service, no binaries, no build output
 - [ ] Nothing circumvents DRM, account or subscription checks, regional restrictions or another trust mechanism
+- [ ] Nothing answers or hides a consent banner for the viewer
 - [ ] Every commit is signed off (`git commit -s`)
