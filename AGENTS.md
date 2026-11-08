@@ -223,7 +223,11 @@ apps. The page's media state (video, audio, paused) drives Kodi's
 screensaver and display power rules. `window.close()` in the top
 document asks Kodi to leave the app. Leaving an app, that way or by
 starting another one, closes its view: nothing of the page keeps
-running, and the next start loads the start URL afresh.
+running, and the next start loads the start URL afresh. Session
+cookies outlive the view and last until Kodi exits, by design, so that
+returning to an app while Kodi runs finds its session as the viewer
+left it; a page that tells a new session from a returning one by a
+session cookie sees a new session only after Kodi restarts.
 
 ### Web app modules
 
@@ -580,9 +584,11 @@ buttons, the banner stays as the service shows it.
 
 A banner shows only while the profile holds no answer, and many
 services show it only to connections from the EU. Test from a country
-where the service asks, after deleting the service's cookies
-(`Page.deleteCookie`) and its storage (`localStorage.clear()`,
-evaluated in the banner's frame) with the inspector.
+where the service asks, with an empty profile: stop Kodi, remove the
+app's profile, `userdata/webdata/kodi-webview/<id>/` in Kodi's data
+directory, and start Kodi again. Some apps ask only on their second
+start, once they have seen their cookies persist; that start needs a
+Kodi restart too, as session cookies last until Kodi exits.
 
 ## Porting checklist
 
