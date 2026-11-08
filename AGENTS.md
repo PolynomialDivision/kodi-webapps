@@ -378,13 +378,22 @@ WebSocket at `/socket/<connection>/<page>/WebPage`; the listing page
 names them. It speaks the WebKit Inspector Protocol: wait for
 `Target.targetCreated`, then wrap every command in
 `Target.sendMessageToTarget` for that target and read the replies from
-`Target.dispatchMessageFromTarget`. Useful domains:
+`Target.dispatchMessageFromTarget`.
 
-- `Runtime.evaluate` with `returnByValue` and `awaitPromise`, to read the
-  page's state and to try code against the live page.
+A page takes one inspector client at a time. A second connection to
+the same page receives no `Target.targetCreated` and cuts the first
+one off, so a network trace and the commands that read the page during
+it go over one connection; a tool that traces while another evaluates
+loses both. Useful domains:
+
+- `Runtime.evaluate` with `returnByValue`, to read the page's state and
+  to try code against the live page. It ignores `awaitPromise` and
+  returns a promise unresolved: store the result in a global from the
+  promise's handler and read that with a later evaluation.
 - `Network`, enabled with `Network.enable`, which reports every request,
   its response and its failure: the tool for finding a player's
-  manifest, an API, or what an advert loads.
+  manifest, an API, or what an advert loads. A request that a content
+  filter blocks is not reported at all.
 - `Console`, for the page's own errors.
 - `DOM` and `LayerTree`, for layout and compositing questions.
 
