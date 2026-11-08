@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.orfon" name="ORF ON" version="1.0.8" provider-name="Daniel Golle">
+<addon id="webapp.orfon" name="ORF ON" version="1.1.0" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
   </requires>
-  <extension point="kodi.webapp" starturl="https://orfhbbtv.orf.at/orf/tvthek24/index.html?id=orfon&amp;ref=portal&amp;trackingconsent=false">
+  <extension point="kodi.webapp" starturl="https://orfhbbtv.orf.at/orf/tvthek24/index.html?id=orfon&amp;ref=portal">
     <viewport width="1280" height="720"/>
     <useragent>Mozilla/5.0 (Web0S; Linux/SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 WebAppManager</useragent>
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv-scale.js</userscript>
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv.js</userscript>
+    <userscript>profile/scripts/10-consent.js</userscript>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">The ORF ON TV edition inside Kodi</summary>
