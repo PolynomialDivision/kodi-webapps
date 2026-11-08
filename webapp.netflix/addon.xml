@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.netflix" name="Netflix" version="1.2.0" provider-name="Daniel Golle">
+<addon id="webapp.netflix" name="Netflix" version="1.3.0" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.consent" version="1.0.0"/>
@@ -8,6 +8,8 @@
     <useragent>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36</useragent>
     <userscript addon="webapp.module.consent">profile/scripts/onetrust.js</userscript>
     <userscript>profile/scripts/10-remote.js</userscript>
+    <contentfilter list="easyprivacy"/>
+    <contentfilter>profile/filters/netflix-trackers.txt</contentfilter>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">Netflix inside Kodi</summary>

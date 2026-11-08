@@ -1,0 +1,4 @@
+! Netflix's marketing and advertising tag frames, and the page log on
+! its own host, which the shared lists leave
+||ae.nflximg.net/monet/
+||netflix.com/log/www/
