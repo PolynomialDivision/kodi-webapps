@@ -1,0 +1,6 @@
+! YouTube's event log, playback quality and attribution reports and its
+! audience panel check; watch time stays, as watch history needs it
+||youtube.com/youtubei/v1/log_event
+||youtube.com/api/stats/qoe
+||youtube.com/api/stats/atr
+||eligibility-panelresearch.googlevideo.com^
