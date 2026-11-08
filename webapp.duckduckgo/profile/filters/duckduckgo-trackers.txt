@@ -1,0 +1,2 @@
+! DuckDuckGo's own usage pixels, of which the shared lists block one path
+||improving.duckduckgo.com^
