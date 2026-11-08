@@ -1,0 +1,4 @@
+! ARTE's own copies of measurement libraries, which the shared lists
+! do not name; the app runs without them
+||arte.tv/static/hbbtvv3/*/ressources/js/libs/smarttag.js
+||arte.tv/static/hbbtvv3/*/ressources/js/libs/agf.js

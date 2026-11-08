@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.arte" name="ARTE" version="1.1.0" provider-name="Daniel Golle">
+<addon id="webapp.arte" name="ARTE" version="1.2.0" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
@@ -17,6 +17,8 @@
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv.js</userscript>
     <userscript>profile/scripts/10-language.js</userscript>
     <userscript>profile/scripts/20-consent.js</userscript>
+    <contentfilter list="easyprivacy"/>
+    <contentfilter>profile/filters/arte-trackers.txt</contentfilter>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="en_GB">The ARTE TV edition inside Kodi</summary>
