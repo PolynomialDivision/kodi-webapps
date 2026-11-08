@@ -512,6 +512,14 @@ section.
 
 ## Advertisement and tracking
 
+Every add-on blocks trackers by default, whatever the viewer answers
+to a consent banner: measurement, analytics, advertising identifiers
+and the scripts that load them. A cookie, script or third-party
+service stays only where the app needs it to let the viewer navigate
+and play titles; where blocking it breaks either, it stays, and the
+commit message says which and why. Every add-on opts into
+EasyPrivacy, and adds a filter file for the trackers it leaves.
+
 Prefer, in this order:
 
 1. The shared lists. `<contentfilter list="easylist"/>` and
@@ -630,7 +638,8 @@ Kodi restart too, as session cookies last until Kodi exits.
 6. A consent banner, where the service shows one, appears, is usable
    with the remote, and refuses everything optional with one press of
    OK, as "Consent banners" describes.
-7. Adverts and trackers are blocked.
+7. Adverts and trackers are blocked, with navigation and playback
+   still working.
 8. The page still works after a Kodi restart, with the profile kept.
 
 Find the cause of a fault before changing anything. Almost every fault
