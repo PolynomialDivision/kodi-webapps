@@ -1,0 +1,10 @@
+! Amazon's page and client metrics, of which the shared lists name only
+! other regions' hosts
+||fls-eu.amazon.com^
+||unagi-eu.amazon.com^
+||unagi-na.amazon.com^
+||minerva.devices.a2z.com^
+! Prime Video's own usage events on its API host
+||primevideo.com/cdp/usage/Clickstream
+||primevideo.com/cdp/usage/ReportEvent
+||primevideo.com/cdp/insights/
