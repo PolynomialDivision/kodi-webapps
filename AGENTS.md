@@ -235,7 +235,9 @@ User scripts and filter files that several web apps share live in web
 app modules, add-ons with the id `webapp.module.<name>` and the
 extension point `kodi.webapp.module`, which takes no elements: a module
 is only files. `webapp.module.hbbtv` is the HbbTV terminal described
-under "The HbbTV terminal". A web app imports the module in
+under "The HbbTV terminal"; `webapp.module.consent` holds the scripts
+for consent platforms several services use, described under "Consent
+banners". A web app imports the module in
 `<requires>`, so that Kodi installs it along with the app, and names
 each file it uses with `addon=`, as the HbbTV editions do:
 
@@ -581,6 +583,25 @@ its dark patterns apart:
 
 Such a script fails open: where it no longer finds the banner's
 buttons, the banner stays as the service shows it.
+
+Move the focus the way the banner itself does: TV banners keep their
+own focus, in a class on the focused button, an index in their state
+or a component of the page's framework, and react to keys by that,
+not by the document's focus. Find that mechanism in the banner's code
+and use it, as the scripts named below do. A banner may set its
+focus again after it is drawn; hold it on the refusal until the
+viewer's first key press, which is trusted (`isTrusted`), and from
+then on leave it to the viewer. A banner offered again later, from the
+app's settings, opens on the refusal too.
+
+Banners of common consent platforms are handled by the scripts of
+`webapp.module.consent`: `profile/scripts/didomi.js` for Didomi's
+notice for TVs and `profile/scripts/onetrust.js` for OneTrust's
+banners and preference centre, for TVs and for desktop sites. An app
+whose banner comes from one of them imports the module and names the
+script. A banner of the service's own gets a script in the app, as
+`webapp.arte`, `webapp.francetv`, `webapp.la7`, `webapp.orfon`,
+`webapp.primevideo` and `webapp.raiplay` have.
 
 A banner shows only while the profile holds no answer, and many
 services show it only to connections from the EU. Test from a country
