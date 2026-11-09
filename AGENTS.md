@@ -258,10 +258,12 @@ newer module version provides.
 
 ### Settings
 
-Kodi gives every web app the settings that Kodi itself reads, in a
-category of its own after the app's: the uplink that the app's
-connections leave through (`uplinkaddress`, from `kodi.webapp` 1.3.0
-on). An add-on does not define them. Its own settings, such as the
+Kodi gives every web app the settings that Kodi itself reads, in
+categories of their own after the app's: the uplink that the app's
+connections leave through (`uplinkaddress`, category `network`), and
+whether the app may play video that only a software decoder decodes
+(`softwarevideodecoding`, category `video`, off by default), both from
+`kodi.webapp` 1.3.0 on. An add-on does not define them. Its own settings, such as the
 start URLs and identities it offers, go into
 `resources/settings.xml`, labelled by strings from 30000 upwards in
 `resources/language/resource.language.en_gb/strings.po`, as
@@ -491,14 +493,19 @@ supported (no demuxer or decoder for it, or the source was refused).
 
 ### Decoders
 
-kodi-webview ranks hardware decoders above software decoders, so a page
-that offers several codecs gets one the device decodes in hardware, and
-software decoders remain available for the rest. Kodi's setting
-"Software video decoding in web pages" leaves the ranking to the engine
-instead. A service that offers only a codec the device decodes in
-software plays at a reduced frame rate, or not at all at high
-resolutions; that is a property of the device, not a fault of the
-add-on.
+A web app is offered only the video codecs the device decodes in
+hardware: `MediaSource.isTypeSupported()` and `canPlayType()` report no
+other, so a page that offers several codecs picks one of those. The
+app's setting "Allow software decoding" (`softwarevideodecoding`, see
+"Settings") offers it the codecs of the software decoders as well.
+Encrypted Media Extensions are not limited this way: a DRM module that
+decodes video itself keeps every codec it handles. Where a codec has
+both kinds of decoder, kodi-webview ranks the hardware decoders first;
+Kodi's setting "Software video decoding in web pages" leaves that
+ranking to the engine. A service that offers only a codec the device
+decodes in software plays only with the app's setting on, and then at
+a reduced frame rate, or not at all at high resolutions; that is a
+property of the device, not a fault of the add-on.
 
 ### Encrypted media
 
