@@ -518,9 +518,11 @@ kodi-webview prefers that file to `libwidevinecdm.so`.
 
 A web app that imports InputStream Helper gets it installed along with
 the app. While no CDM is installed, Kodi runs the helper's check for
-Widevine before it opens such an app: the viewer installs the CDM or
-declines, and the app opens either way. The client reads the CDM
-directory when it starts, so Kodi restarts it once a CDM is installed.
+Widevine before it opens such an app, on every start: the viewer
+installs the CDM, declines or leaves with BACK, and the app opens
+either way. The client reads the CDM directory when it starts, so
+before Kodi opens any web app it restarts the client if the CDM
+installed is not the one the client started with.
 
 An app imports `script.module.inputstreamhelper`, without a version,
 wherever there is evidence that some of its content may need Widevine:
