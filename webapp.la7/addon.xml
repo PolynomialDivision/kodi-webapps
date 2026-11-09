@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.la7" name="La7" version="1.5.0" provider-name="Daniel Golle">
+<addon id="webapp.la7" name="La7" version="1.5.1" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
+    <import addon="script.module.inputstreamhelper"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://ht.la7.it/index.php">
