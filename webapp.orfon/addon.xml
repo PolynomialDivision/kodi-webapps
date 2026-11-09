@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.orfon" name="ORF ON" version="1.2.0" provider-name="Daniel Golle">
+<addon id="webapp.orfon" name="ORF ON" version="1.3.0" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
@@ -10,6 +10,7 @@
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv-scale.js</userscript>
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv.js</userscript>
     <userscript>profile/scripts/10-consent.js</userscript>
+    <contentfilter list="easylist"/>
     <contentfilter list="easyprivacy"/>
   </extension>
   <extension point="xbmc.addon.metadata">
