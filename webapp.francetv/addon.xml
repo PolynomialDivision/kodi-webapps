@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.francetv" name="france.tv" version="1.2.0" provider-name="Daniel Golle">
+<addon id="webapp.francetv" name="france.tv" version="1.2.1" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
+    <import addon="script.module.inputstreamhelper"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://orange.france.tv/">
     <viewport width="1920" height="1080"/>
