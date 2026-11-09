@@ -216,6 +216,17 @@ file disagree, the draft is right and this file needs correcting.
   screen, keeping its aspect ratio (needs `kodi.webapp` 1.2.0 or later;
   an older Kodi lays the page out at the screen's size). Desktop and
   responsive sites take none.
+- `<redbutton on="..." off="..."/>`, for an HbbTV edition whose start
+  URL chooses whether the red button hides it: the query parameter
+  that makes red hide the edition and the one that keeps red inside
+  it. Kodi appends the one the setting `redbuttonhides` chooses to the
+  start URL; a state without an attribute appends nothing (needs
+  `kodi.webapp` 1.4.0 or later).
+- `<encryptedmedia optional="true"/>`, for an app whose service serves
+  most of its video in the clear and protects some of it only where
+  the browser offers encrypted media; the viewer allows it with the
+  setting `encryptedmedia`, as "Encrypted media" describes (needs
+  `kodi.webapp` 1.4.0 or later).
 
 Each add-on has a profile of its own, named by the add-on id: cookies,
 storage and logins persist across restarts and never mix with other web
@@ -258,12 +269,22 @@ newer module version provides.
 
 ### Settings
 
-Kodi gives every web app the settings that Kodi itself reads, in
-categories of their own after the app's: the uplink that the app's
-connections leave through (`uplinkaddress`, category `network`), and
-whether the app may play video that only a software decoder decodes
-(`softwarevideodecoding`, category `video`, off by default), both from
-`kodi.webapp` 1.3.0 on. An add-on does not define them. Its own settings, such as the
+Kodi gives web apps the settings that Kodi itself reads, in categories
+of their own after the app's:
+
+- `uplinkaddress`, category `network`: the uplink that the app's
+  connections leave through. Every app, from `kodi.webapp` 1.3.0 on.
+- `softwarevideodecoding`, category `video`, off by default: whether
+  the app may play video that only a software decoder decodes. Every
+  app, from `kodi.webapp` 1.3.0 on.
+- `encryptedmedia`, category `video`, off by default: whether the app
+  may play DRM-protected video. Apps whose manifest has
+  `<encryptedmedia optional="true"/>`, from `kodi.webapp` 1.4.0 on.
+- `redbuttonhides`, category `hbbtv`, off by default: whether the red
+  button hides the app. Apps whose manifest has `<redbutton>`, from
+  `kodi.webapp` 1.4.0 on.
+
+An add-on does not define them. Its own settings, such as the
 start URLs and identities it offers, go into
 `resources/settings.xml`, labelled by strings from 30000 upwards in
 `resources/language/resource.language.en_gb/strings.po`, as
@@ -464,6 +485,18 @@ broadcast or a key, and return to it when they exit. Start them in the
 mode an HbbTV portal uses, where the edition destroys itself on exit, if
 it offers one; otherwise a user script can dismiss the banner.
 
+On a television the red button hides an HbbTV edition so that the
+broadcast behind it shows. Kodi shows no broadcast behind a web app,
+so an edition hidden that way leaves an empty screen. The viewer
+chooses with the setting `redbuttonhides`, off by default: where the
+start URL decides what red does, the manifest names the query
+parameter for each state with `<redbutton>`; an edition that ignores
+red takes none. With the setting on, red hides the edition only on the
+screens where the edition itself offers that. A URL handed to Kodi's
+`RunAddon` is opened as given,
+so that a launcher for a broadcast channel's red button chooses for
+itself.
+
 Many editions choose their video player by platform: an OIPF object for
 receivers, an HTML5 or MSE player for others. Prefer the HTML5 or MSE
 path, through the edition's own switch where it has one or through the
@@ -523,6 +556,17 @@ installs the CDM, declines or leaves with BACK, and the app opens
 either way. The client reads the CDM directory when it starts, so
 before Kodi opens any web app it restarts the client if the CDM
 installed is not the one the client started with.
+
+Some services serve video that they would serve in the clear protected
+instead wherever the browser offers encrypted media, and a CDM that
+decodes video itself does so in software, too slowly on small devices
+for what the hardware decoders play. Such an app declares
+`<encryptedmedia optional="true"/>`, as `webapp.youtube` does, and the
+viewer chooses with its setting `encryptedmedia`, off by default.
+While the setting is off, Kodi hides the encrypted media API from the
+app's pages and runs no check for Widevine before it opens the app;
+video the service serves only protected then does not play. Apps
+without the element have no such setting and keep encrypted media.
 
 An app imports `script.module.inputstreamhelper`, without a version,
 wherever there is evidence that some of its content may need Widevine:
@@ -673,12 +717,15 @@ Kodi restart too, as session cookies last until Kodi exits.
    device can, with the video visible on the screen.
 5. Leaving the app returns to Kodi, from the app's own exit and with BACK
    from its first screen.
-6. A consent banner, where the service shows one, appears, is usable
+6. The red button of an HbbTV edition stays inside it with
+   `redbuttonhides` off and hides it with the setting on, as "The HbbTV
+   terminal" describes.
+7. A consent banner, where the service shows one, appears, is usable
    with the remote, and refuses everything optional with one press of
    OK, as "Consent banners" describes.
-7. Adverts and trackers are blocked, with navigation and playback
+8. Adverts and trackers are blocked, with navigation and playback
    still working.
-8. The page still works after a Kodi restart, with the profile kept.
+9. The page still works after a Kodi restart, with the profile kept.
 
 Find the cause of a fault before changing anything. Almost every fault
 met while porting is in the add-on, in a user script, or in a wrong
