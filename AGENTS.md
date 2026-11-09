@@ -331,8 +331,8 @@ them.
    an icon URL of an image the service publishes, legible on Kodi's dark
    background. Start at version 1.0.0. `<requires>` imports
    `kodi.webapp` 1.3.0, or a later version where the app cannot work
-   without a manifest element it provides, and the modules the app
-   uses.
+   without a manifest element it provides, the modules the app uses,
+   and InputStream Helper where "Encrypted media" asks for it.
 3. Pick the identity. HbbTV editions take an HbbTV user agent that names
    Kodi as the terminal, as the existing HbbTV add-ons do; hosted TV apps
    take the user agent of the platform they are served to.
@@ -509,7 +509,27 @@ property of the device, not a fault of the add-on.
 
 ### Encrypted media
 
-kodi-webview uses the Widevine CDM that inputstream.adaptive installs.
+Pages decrypt with the Widevine CDM in inputstream.adaptive's
+decrypter path (its setting `DECRYPTERPATH`, `special://home/cdm` by
+default), which InputStream Helper (`script.module.inputstreamhelper`)
+installs there. A vendor that supplies its own CDM names it
+`libwidevinecdm-vendor.so`, so that InputStream Helper leaves it be;
+kodi-webview prefers that file to `libwidevinecdm.so`.
+
+A web app that imports InputStream Helper gets it installed along with
+the app. While no CDM is installed, Kodi runs the helper's check for
+Widevine before it opens such an app: the viewer installs the CDM or
+declines, and the app opens either way. The client reads the CDM
+directory when it starts, so Kodi restarts it once a CDM is installed.
+
+An app imports `script.module.inputstreamhelper`, without a version,
+wherever there is evidence that some of its content may need Widevine:
+a licence request in the inspector's network trace, the service's own
+player configuration naming Widevine or a licence server, or the
+service's API marking titles as protected. A table of key systems
+inside a general-purpose player library is no such evidence. The
+commit message names the evidence found.
+
 On musl systems the CDM needs a compatibility library preloaded, which
 the packaging handles. A CDM may refuse decryption for some streams or
 in some modes; such a refusal ends the investigation. See the first
