@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.orfon" name="ORF ON" version="1.3.0" provider-name="Daniel Golle">
+<addon id="webapp.orfon" name="ORF ON" version="1.3.1" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
+    <import addon="script.module.inputstreamhelper"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://orfhbbtv.orf.at/orf/tvthek24/index.html?id=orfon&amp;ref=portal">
