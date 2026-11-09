@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.raiplay" name="RaiPlay" version="1.2.0" provider-name="Daniel Golle">
+<addon id="webapp.raiplay" name="RaiPlay" version="1.2.1" provider-name="Daniel Golle">
   <requires>
     <import addon="kodi.webapp" version="1.3.0"/>
+    <import addon="script.module.inputstreamhelper"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="https://www.raiplay.it/hbbtv/RaiPlay2020/index.html">
