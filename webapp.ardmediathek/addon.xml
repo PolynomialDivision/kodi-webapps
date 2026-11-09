@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="webapp.ardmediathek" name="ARD Mediathek" version="1.0.8" provider-name="Daniel Golle">
+<addon id="webapp.ardmediathek" name="ARD Mediathek" version="1.1.0" provider-name="Daniel Golle">
   <requires>
-    <import addon="kodi.webapp" version="1.3.0"/>
+    <import addon="kodi.webapp" version="1.4.0"/>
     <import addon="webapp.module.hbbtv" version="1.0.0"/>
   </requires>
   <extension point="kodi.webapp" starturl="http://tv.ardmediathek.de/index.html?platform=hbbtv">
     <viewport width="1280" height="720"/>
+    <redbutton off="noclose=1"/>
     <useragent>Mozilla/5.0 (Linux; aarch64) AppleWebKit/605.1.15 (KHTML, like Gecko) WPE HbbTV/1.5.1 (; OpenWrt; Kodi; 22.0; ; Kodi;)</useragent>
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv-scale.js</userscript>
     <userscript addon="webapp.module.hbbtv">profile/scripts/hbbtv.js</userscript>
